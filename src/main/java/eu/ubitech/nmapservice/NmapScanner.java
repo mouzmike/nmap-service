@@ -25,6 +25,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import eu.ubitech.nmapservice.exception.InvalidNmapHostException;
+import eu.ubitech.nmapservice.exception.NmapOutputParsingException;
 import eu.ubitech.nmapservice.exception.NoHostsSetException;
 
 @Component
@@ -65,28 +66,27 @@ public class NmapScanner implements INmapScanner {
                   nmapCommand + " -oX " + file + " " + String.join(" ", request.getHosts());
 
               LOGGER.info("Executing command {} ...", command);
-              
+
               try {
                 Process proc = Runtime.getRuntime().exec(command);
                 proc.waitFor();
               } catch (IOException | InterruptedException e) {
-            	  LOGGER.error("Error while executing NMAP with message {}.", e.getMessage());
+                LOGGER.error("Error while executing NMAP with message {}.", e.getMessage());
               }
               return file;
             })
         .thenAccept(
             file -> {
-              
               if (Files.exists(Paths.get(file), LinkOption.NOFOLLOW_LINKS)) {
-            	  LOGGER.info("Result file {} was generated.", file);
+                LOGGER.info("Result file {} was generated.", file);
               }
 
               if (!stringNullOrEmpty(request.getCallbackURL())) {
                 try {
                   parseResultAndCallback(
                       request.getCallbackURL(), request.getAuthorization(), file);
-                } catch (IOException e) {
-                  LOGGER.error("Error while handling result file {}.", file);
+                } catch (IOException | NmapOutputParsingException e) {
+                  LOGGER.error("Error while handling result file " + file + ".", e);
                 }
               }
             });
@@ -113,15 +113,18 @@ public class NmapScanner implements INmapScanner {
 
   private final void parseResultAndCallback(
       final String callbackURL, final String authorization, final String resultFile)
-      throws IOException {
+      throws IOException, NmapOutputParsingException {
+
+    INmapParser parser = new NmapParser();
+    NmapResult nmapResult = parser.parse(resultFile);
 
     MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
     if (!stringNullOrEmpty(authorization)) {
       headers.add("Authorization", authorization);
     }
+    headers.set("Content-Type", "application/json");
 
-    final String nmapResult = readXMLReport(resultFile);
-    HttpEntity<String> httpEntity = new HttpEntity<>(nmapResult, headers);
+    HttpEntity<NmapResult> httpEntity = new HttpEntity<>(nmapResult, headers);
 
     LOGGER.info(
         "Posting {} to {} with header Authorization: {} for file {}.",
@@ -139,6 +142,8 @@ public class NmapScanner implements INmapScanner {
     }
   }
 
+  @SuppressWarnings("unused")
+  @Deprecated
   private final String readXMLReport(String file) throws IOException {
     StringBuilder sb = new StringBuilder();
     try (BufferedReader br =
