@@ -122,6 +122,8 @@ public abstract class CommandSender<Req, Res extends Response> {
               StartTaskCommand.StartTaskResponse.class,
               GetResultsCommand.GetResultsRequest.class,
               GetResultsCommand.GetResultsResponse.class,
+              GetTaskStatusCommand.GetTaskStatusRequest.class,
+              GetTaskStatusCommand.GetTaskStatusResponse.class,
               Response.class);
       this.marsaller = context.createMarshaller();
       this.unmarshaller = context.createUnmarshaller();

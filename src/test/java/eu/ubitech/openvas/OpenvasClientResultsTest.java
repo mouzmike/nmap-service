@@ -16,6 +16,14 @@ public class OpenvasClientResultsTest {
     String user = "admin", pass = "admin";
     String openvasHost = "218ffb30ff7a";
     int openvasHostPort = 19390;
+    String task = "c172ec7e-d5c7-4c17-b5d3-6fdd38f93258";
+
+    OpenvasClient.TASK_STATUS
+        .builder()
+        .withAuthentication(user, pass)
+        .forTask(task)
+        .build()
+        .send(openvasHost, openvasHostPort).getTasks().forEach(System.out::println);
 
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -24,7 +32,7 @@ public class OpenvasClientResultsTest {
             OpenvasClient.GET_RESULTS
                 .builder()
                 .withAuthentication(user, pass)
-                .forTask("43ae80ae-0e5d-47a0-8998-092494218910")
+                .forTask(task)
                 .build()
                 .send(openvasHost, openvasHostPort)
                 .getResults()));
