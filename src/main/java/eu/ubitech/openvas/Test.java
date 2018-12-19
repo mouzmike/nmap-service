@@ -12,7 +12,7 @@ public class Test {
       throws OpenvasClientAuthenticationException, OpenvasCommandExecutionException,
           OpenvasClientException {
 
-    String rand = "20181217";
+    String rand = "20181216";
     String user = "admin", pass = "admin";
     String openvasHost = "218ffb30ff7a";
     int openvasHostPort = 19390;

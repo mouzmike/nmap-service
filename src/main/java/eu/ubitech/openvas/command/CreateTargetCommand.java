@@ -6,7 +6,6 @@ import java.util.TreeSet;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -45,20 +44,9 @@ public class CreateTargetCommand extends Command<CreateTargetRequest, CreateTarg
 
   @XmlAccessorType(value = XmlAccessType.FIELD)
   @XmlRootElement(name = "create_target_response")
-  public static class CreateTargetResponse extends Response {
+  public static class CreateTargetResponse extends ResourceResponse {
 
     public CreateTargetResponse() {}
-
-    @XmlAttribute(name = "id")
-    private String resourceId;
-
-    public String getResourceId() {
-      return resourceId;
-    }
-
-    public void setResourceId(String resourceId) {
-      this.resourceId = resourceId;
-    }
 
     @Override
     public String toString() {
