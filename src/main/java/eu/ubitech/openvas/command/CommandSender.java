@@ -64,7 +64,6 @@ public abstract class CommandSender<Req, Res extends Response> {
       
       byte[] finalArray = new byte[totalBytesRead];
       System.arraycopy(buffer, 0, finalArray, 0, totalBytesRead);
-      System.out.println(new String(finalArray));
       StringReader sr = new StringReader(new String(finalArray));
 
       AuthenticatedResponse<? extends Response> response =
