@@ -11,7 +11,7 @@ public class OpenvasClientTest {
 		      throws OpenvasClientAuthenticationException, OpenvasCommandExecutionException,
 		          OpenvasClientException {
 
-		    String rand = "20181216";
+		    String rand = "20181219";
 		    String user = "admin", pass = "admin";
 		    String openvasHost = "218ffb30ff7a";
 		    int openvasHostPort = 19390;
@@ -21,8 +21,8 @@ public class OpenvasClientTest {
 		            .builder()
 		            .withAuthentication(user, pass)
 		            .setName(rand)
-		            .addHostSpecifier("192.168.2.1")
-		            .addHostSpecifier("192.168.2.10")
+		            .addHostSpecifier("192.168.7.100")
+		            .addHostSpecifier("192.168.3.66")
 		            .build()
 		            .send(openvasHost, openvasHostPort)
 		            .getResourceId();
